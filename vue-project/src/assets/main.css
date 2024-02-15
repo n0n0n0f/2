@@ -33,3 +33,22 @@ a,
     padding: 0 2rem;
   }
 }
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+}
+.card {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+ul {
+  padding-left: 20px;
+}
+.app_card{
+  display: flex;
+}
