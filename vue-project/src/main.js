@@ -26,5 +26,15 @@ new Vue({
                 this.newCardTitle = '';
             }
         },
-    }
+        moveToColumn2(card) {
+            if (this.column2.length < 5) {
+                this.column3.splice(this.column3.indexOf(card), 1);
+                this.column2.push(card);
+                card.completed = false;
+            } else {
+                alert("Нельзя переместить карточку во второй столбец из-за достижения лимита.");
+            }
+        },
+
+        }
 });
