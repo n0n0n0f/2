@@ -5,22 +5,24 @@ new Vue({
         column2: [],
         column3: [],
         newCardTitle: '',
-        column1Locked: false
+        column1Locked: false,
+        column2Full1: false
     },
     computed: {
-        // вычисляемое свойство для проверки заполненности второго столбца
         column2Full() {
             return this.column2.length >= 5;
         }
     },
+
     mounted() {
-        // Загрузка данных из localStorage при загрузке страницы
         if (localStorage.getItem('notes')) {
             const savedData = JSON.parse(localStorage.getItem('notes'));
             this.column1 = savedData.column1;
             this.column2 = savedData.column2;
             this.column3 = savedData.column3;
             this.column1Locked = savedData.column1Locked;
+            this.column2Full1 = savedData.column2Full1;
+
         }
     },
     methods: {
@@ -54,14 +56,16 @@ new Vue({
                     column1: this.column1,
                     column2: this.column2,
                     column3: this.column3,
-                    column1Locked: this.column1Locked
+                    column1Locked: this.column1Locked,
+                    column2Full1: this.column2Full1
                 }));
             }
         },
         checkItem(card) {
             if (this.column1Locked) {
-                return; // Если столбец заблокирован, прекратить выполнение метода
+                return; // Если столбик заблокан, то уже се
             }
+            this.column2Full1 = false;
 
             const checkedCount = card.items.filter(item => item.checked).length;
             const totalCount = card.items.length;
@@ -72,16 +76,16 @@ new Vue({
                     this.column1.splice(this.column1.indexOf(card), 1);
                     this.column2.push(card);
                 } else {
+                    this.column2Full1 = true;
                     alert("Нельзя переместить карточку во второй столбец из-за достижения лимита.");
-                    return;
                 }
             }
 
-            if (this.column1Locked && this.column2.length < 5) {
-                this.column1Locked = false; // Установка column1Locked в false, если во втором столбце менее 5 записей
+            if (this.column1Locked && this.column2.length === 5 && completionPercentage >= 50) {
+                this.column2Full1 = true;
             }
 
-            // Добавляем проверку для переноса из третьего столбца во второй
+      // Проверка на перенос карточки из 3 столбца во 2
             if (completionPercentage >= 50 && this.column3.includes(card)) {
                 if (this.column2.length < 5) {
                     const index = this.column3.indexOf(card);
@@ -120,14 +124,15 @@ new Vue({
                 column1: this.column1,
                 column2: this.column2,
                 column3: this.column3,
-                column1Locked: this.column1Locked
+                column1Locked: this.column1Locked,
+                column2Full1: this.column2Full1
             }));
         },
 
 
         updateItemText(card, item, newText) {
             if (this.column1Locked) {
-                return; // Если столбец заблокирован, прекратить выполнение метода
+                return;
             }
 
             item.text = newText;
@@ -135,7 +140,8 @@ new Vue({
                 column1: this.column1,
                 column2: this.column2,
                 column3: this.column3,
-                column1Locked: this.column1Locked
+                column1Locked: this.column1Locked,
+                column2Full1: this.column2Full1
             }));
         },
 
@@ -149,7 +155,8 @@ new Vue({
                 column1: this.column1,
                 column2: this.column2,
                 column3: this.column3,
-                column1Locked: this.column1Locked
+                column1Locked: this.column1Locked,
+                column2Full1: this.column2Full1
             }));
         },
     }

@@ -10,10 +10,10 @@
 </head>
 <body>
 <div id="app" :class="{ 'app_card': true, 'disabled': column1Locked }">
-    <div class="column" :class="{ 'column-disabled': column1Locked }">
+    <div class="column" :disabled="column2Full">
         <h2>Столбец 1 (не более 3 карточек)</h2>
-        <div v-for="(card, index) in column1" :key="index" class="card">
-            <h3>{{ card.title }}</h3>
+        <div v-for="(card, index) in column1" :key="index" class="card" :class="{'disabled': column2Full1}">
+            <h3>{{ card.title }}</h3>-
             <ul>
                 <li v-for="(item, i) in card.items" :key="i">
                     <input type="checkbox" v-model="item.checked" :disabled="column1Locked" @change="checkItem(card)">
