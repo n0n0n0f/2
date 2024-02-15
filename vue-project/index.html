@@ -4,10 +4,57 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+  <div id="app" class="app_card">
+      <div class="column">
+          <h2>Столбец 1 (не более 3 карточек)</h2>
+          <div>
+              <h3>{{ card.title }}</h3>
+              <ul>
+                  <li v-for="(item, i) in card.items" :key="i">
+                      <input type="checkbox">
+                      <label>{{ item.text }}</label>
+                  </li>
+              </ul>
+          </div>
+      </div>
+      <div class="column">
+          <h2>Столбец 2 (не более 5 карточек)</h2>
+          <div>
+              <h3>{{ card.title }}</h3>
+              <ul>
+                  <li>
+                      <input type="checkbox">
+                      <label>{{ item.text }}</label>
+                  </li>
+              </ul>
+          </div>
+      </div>
+      <div class="column">
+          <h2>Столбец 3</h2>
+          <div>
+              <h3>{{ card.title }}</h3>
+              <ul>
+                  <li>
+                      <input type="checkbox">
+                      <label>{{ item.text }}</label>
+                  </li>
+              </ul>
+              <p v-if="card.completed">Дата и время последнего выполнения: {{ card.lastCompleted }}</p>
+              <button @click="moveToColumn2(card)">Переместить во второй столбец</button>
+              <button @click="resetCard(card)">Сбросить</button>
+          </div>
+      </div>
+      <form @submit.prevent="addCard">
+          <input type="text" v-model="newCardTitle" placeholder="Заголовок карточки">
+          <button type="submit">Добавить карточку</button>
+      </form>
+      <button @click="resetAllCards">Сбросить все карточки</button>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
   </body>
 </html>
