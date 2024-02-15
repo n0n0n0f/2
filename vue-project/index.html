@@ -49,7 +49,7 @@
     </div>
     <form @submit.prevent="addCard">
         <input type="text" v-model="newCardTitle" placeholder="Заголовок карточки" :disabled="column2Full">
-        <button type="submit" :disabled="column2Full">Добавить карточку</button>
+        <button class="baton" type="submit" :disabled="column2Full">Добавить карточку</button>
     </form>
     <button @click="resetAllCards">Сбросить все карточки</button>
 </div>
