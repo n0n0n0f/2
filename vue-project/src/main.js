@@ -4,7 +4,13 @@ new Vue({
         column1: [],
         column2: [],
         column3: [],
-        newCardTitle: ''
+        newCardTitle: '',
+        column1Locked: false
+    },
+    computed: {
+        column2Full() {
+            return this.column2.length >= 5;
+        }
     },
     mounted() {
         if (localStorage.getItem('notes')) {
@@ -17,7 +23,11 @@ new Vue({
     methods: {
         addCard() {
             if (this.newCardTitle.trim() !== '') {
-                if (this.column1.length < 3) {
+                if (this.column2.length >= 5) {
+                    alert("Нельзя добавить карточку во второй столбец из-за достижения лимита.");
+                    return;
+                }
+                if (!this.column1Locked && this.column1.length < 3) {
                     this.column1.push({
                         title: this.newCardTitle,
                         items: [
@@ -26,9 +36,8 @@ new Vue({
                             { text: 'Пункт 3', checked: false }
                         ]
                     });
-                }
-                else {
-                    alert("Нельзя добавить карточку во второй столбец из-за достижения лимита.");
+                } else {
+                    alert("Нельзя добавить карточку в первый столбец из-за блокировки или достижения лимита.");
                     return;
                 }
                 this.newCardTitle = '';
@@ -40,22 +49,6 @@ new Vue({
                 }));
             }
         },
-        moveToColumn2(card) {
-            if (this.column2.length < 5) {
-                this.column3.splice(this.column3.indexOf(card), 1);
-                this.column2.push(card);
-                card.completed = false;
-
-                localStorage.setItem('notes', JSON.stringify({
-                    column1: this.column1,
-                    column2: this.column2,
-                    column3: this.column3
-                }));
-            } else {
-                alert("Нельзя переместить карточку во второй столбец из-за достижения лимита.");
-            }
-        },
-
         checkItem(card) {
             const checkedCount = card.items.filter(item => item.checked).length;
             const totalCount = card.items.length;
@@ -69,6 +62,10 @@ new Vue({
                     alert("Нельзя переместить карточку во второй столбец из-за достижения лимита.");
                     return;
                 }
+            }
+
+            if (completionPercentage >= 50 && this.column2.length === 5) {
+                this.column1Locked = true;
             }
 
             if (completionPercentage < 100) {
@@ -88,7 +85,20 @@ new Vue({
                 card.lastCompleted = "";
             }
 
-            // Сохранение данных в localStorage
+            if (completionPercentage < 100 && this.column3.includes(card)) {
+                const index = this.column3.indexOf(card);
+                this.column3.splice(index, 1);
+                this.column2.push(card);
+            }
+
+            localStorage.setItem('notes', JSON.stringify({
+                column1: this.column1,
+                column2: this.column2,
+                column3: this.column3
+            }));
+        },
+        updateItemText(card, item, newText) {
+            item.text = newText;
             localStorage.setItem('notes', JSON.stringify({
                 column1: this.column1,
                 column2: this.column2,
@@ -96,21 +106,11 @@ new Vue({
             }));
         },
 
-        resetCard(card) {
-            card.items.forEach(item => {
-                item.checked = false;
-            });
-            card.completed = false;
-            localStorage.setItem('notes', JSON.stringify({
-                column1: this.column1,
-                column2: this.column2,
-                column3: this.column3
-            }));
-        },
         resetAllCards() {
             this.column1 = [];
             this.column2 = [];
             this.column3 = [];
+            this.column1Locked = false;
             localStorage.removeItem('notes');
         },
     }

@@ -1,61 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-      <link rel="stylesheet" href="src/assets/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <link rel="stylesheet" href="src/assets/main.css">
     <title>Vite App</title>
-  </head>
-  <body>
-  <div id="app" class="app_card">
-      <div class="column">
-          <h2>Столбец 1 (не более 3 карточек)</h2>
-          <div v-for="(card, index) in column1" :key="index" class="card">
-              <h3>{{ card.title }}</h3>
-              <ul>
-                  <li v-for="(item, i) in card.items" :key="i">
-                      <input type="checkbox" v-model="item.checked" @change="checkItem(card)">
-                      <label :for="'item-' + index + '-' + i">{{ item.text }}</label>
-                  </li>
-              </ul>
-          </div>
-      </div>
-      <div class="column">
-          <h2>Столбец 2 (не более 5 карточек)</h2>
-          <div v-for="(card, index) in column2" :key="index" class="card">
-              <h3>{{ card.title }}</h3>
-              <ul>
-                  <li v-for="(item, i) in card.items" :key="i">
-                      <input type="checkbox" v-model="item.checked" @change="checkItem(card)">
-                      <label :for="'item-' + index + '-' + i">{{ item.text }}</label>
-                  </li>
-              </ul>
-          </div>
-      </div>
-      <div class="column">
-          <h2>Столбец 3</h2>
-          <div v-for="(card, index) in column3" :key="index" class="card">
-              <h3>{{ card.title }}</h3>
-              <ul>
-                  <li v-for="(item, i) in card.items" :key="i">
-                      <input type="checkbox" v-model="item.checked" @change="checkItem(card)">
-                      <label :for="'item-' + index + '-' + i">{{ item.text }}</label>
-                  </li>
-              </ul>
-              <p v-if="card.completed">Дата и время последнего выполнения: {{ card.lastCompleted }}</p>
-              <button @click="moveToColumn2(card)">Переместить во второй столбец</button>
-              <button @click="resetCard(card)">Сбросить</button>
-          </div>
-      </div>
-      <form @submit.prevent="addCard">
-          <input type="text" v-model="newCardTitle" placeholder="Заголовок карточки">
-          <button type="submit">Добавить карточку</button>
-      </form>
-      <button @click="resetAllCards">Сбросить все карточки</button>
-  </div>
-
-  <script type="module" src="./src/main.js"></script>
-  </body>
+</head>
+<body>
+<div id="app" class="app_card">
+    <div class="column" :class="{ 'disabled': column1Locked }">
+        <h2>Столбец 1 (не более 3 карточек)</h2>
+        <div v-for="(card, index) in column1" :key="index" class="card">
+            <h3>{{ card.title }}</h3>
+            <ul>
+                <li v-for="(item, i) in card.items" :key="i">
+                    <input type="checkbox" v-model="item.checked" :disabled="column1Locked" @change="checkItem(card)">
+                    <input type="text" v-model="item.text" :disabled="column1Locked" @change="updateItemText(card, item, $event.target.value)">
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Столбец 2 (не более 5 карточек)</h2>
+        <div v-for="(card, index) in column2" :key="index" class="card">
+            <h3>{{ card.title }}</h3>
+            <ul>
+                <li v-for="(item, i) in card.items" :key="i">
+                    <input type="checkbox" v-model="item.checked" @change="checkItem(card)">
+                    <label>{{ item.text }}</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="column">
+        <h2>Столбец 3</h2>
+        <div v-for="(card, index) in column3" :key="index" class="card">
+            <h3>{{ card.title }}</h3>
+            <ul>
+                <li v-for="(item, i) in card.items" :key="i">
+                    <input type="checkbox" v-model="item.checked" @change="checkItem(card)">
+                    <label>{{ item.text }}</label>
+                </li>
+            </ul>
+            <p v-if="card.completed">Дата и время последнего выполнения: {{ card.lastCompleted }}</p>
+        </div>
+    </div>
+    <form @submit.prevent="addCard">
+        <input type="text" v-model="newCardTitle" placeholder="Заголовок карточки" :disabled="column2Full">
+        <button type="submit" :disabled="column2Full">Добавить карточку</button>
+    </form>
+    <button @click="resetAllCards">Сбросить все карточки</button>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
 </html>
