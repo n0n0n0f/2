@@ -66,5 +66,16 @@ new Vue({
                 card.lastCompleted = "";
             }
         },
+        resetCard(card) {
+            card.items.forEach(item => {
+                item.checked = false;
+            });
+            card.completed = false;
+        },
+        resetAllCards() {
+            this.column1 = [];
+            this.column2 = [];
+            this.column3 = [];
+        },
     }
 });
